@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/satya-dillikar/helloworld_buf
+deps:
+  - buf.build/googleapis/googleapis

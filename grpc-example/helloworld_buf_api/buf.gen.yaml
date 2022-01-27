@@ -1,0 +1,20 @@
+version: v1
+plugins:
+  - name: go
+    out: gen
+    opt:
+     - module=satya.com/helloworld_buf_api/gen
+  - name: go-grpc
+    out: gen
+    opt:
+      - module=satya.com/helloworld_buf_api/gen
+  - name: grpc-gateway
+    out: gen
+    opt:
+      - module=satya.com/helloworld_buf_api/gen
+  - name: openapiv2
+    out: docs
+    opt:
+      - allow_merge=true
+      - merge_file_name=helloworld-apis
+      - allow_repeated_fields_in_body=true

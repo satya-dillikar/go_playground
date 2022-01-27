@@ -1,0 +1,109 @@
+package main
+
+import (
+	"fmt"
+
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
+)
+
+func server1() error {
+	err := status.Error(codes.NotFound, "id was not found")
+	fmt.Printf("server %v\n", err)
+	return err
+}
+func client1(err error) {
+	st, ok := status.FromError(err)
+	if !ok {
+		// Error was not a status error
+		fmt.Printf("Unexpected error : %v", err)
+	}
+	// Use st.Message() and st.Code()
+	fmt.Printf("client: message - %s\n", st.Message())
+	fmt.Printf("client: code - %s\n", st.Code())
+}
+
+// second
+func server2() error {
+	st := status.New(codes.InvalidArgument, "invalid username")
+	desc := "The username must only contain alphanumeric characters"
+	v := &errdetails.BadRequest_FieldViolation{
+		Field:       "username",
+		Description: desc,
+	}
+	br := &errdetails.BadRequest{}
+	br.FieldViolations = append(br.FieldViolations, v)
+	st, err := st.WithDetails(br)
+	if err != nil {
+		// If this errored, it will always error
+		// here, so better panic so we can figure
+		// out why than have this silently passing.
+		panic(fmt.Sprintf("Unexpected error attaching metadata: %v", err))
+	}
+	return st.Err()
+}
+
+func client2(err error) {
+	st := status.Convert(err)
+	for _, detail := range st.Details() {
+		switch t := detail.(type) {
+		case *errdetails.BadRequest:
+			fmt.Println("Oops! Your request was rejected by the server.")
+			for _, violation := range t.GetFieldViolations() {
+				fmt.Printf("The %q field was wrong:\n", violation.GetField())
+				fmt.Printf("\t%s\n", violation.GetDescription())
+			}
+		}
+	}
+}
+
+// third
+func server3() error {
+
+	st := status.New(codes.InvalidArgument, "One or more fields are invalid")
+
+	f1 := &errdetails.BadRequest_FieldViolation{
+		Field:       "Email",
+		Description: "Invalid email format",
+	}
+
+	f2 := &errdetails.BadRequest_FieldViolation{
+		Field:       "Password",
+		Description: "Must be at least 10 characters",
+	}
+
+	f3 := &errdetails.PreconditionFailure_Violation{
+		Type:        "USER",
+		Subject:     "no users created",
+		Description: "No users have been created",
+	}
+	st, _ = st.WithDetails(f1)
+	st, _ = st.WithDetails(f2)
+	st, _ = st.WithDetails(f3)
+
+	return st.Err()
+}
+func client3(err error) {
+	st, _ := status.FromError(err)
+	p := st.Proto()
+	data, _ := protojson.Marshal(p)
+	fmt.Println(string(data))
+}
+
+func main() {
+	var err error
+	/* 	fmt.Println("--------")
+	   	err = server1()
+	   	client1(err)
+	   	fmt.Println("--------")
+	   	err = server2()
+	   	client2(err)
+	   	fmt.Println("--------") */
+	err = server3()
+	client3(err)
+	//fmt.Println("--------")
+	//fmt.Println(err)
+}

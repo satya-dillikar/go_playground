@@ -1,0 +1,14 @@
+version: v1
+plugins:
+  - name: go
+    out: pingpong
+    opt:
+     - module=satya.com/satya-dillikar/grpcexample/pingpong
+  - name: go-grpc
+    out: pingpong
+    opt:
+     - module=satya.com/satya-dillikar/grpcexample/pingpong
+  - name: grpc-gateway
+    out: pingpong
+    opt:
+     - module=satya.com/satya-dillikar/grpcexample/pingpong

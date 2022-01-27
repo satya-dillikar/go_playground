@@ -1,0 +1,8 @@
+{
+  "app": {
+    "env": "myconfig.json",
+    "consumerbroker": "first.example.com:8090",
+    "producerbroker": "second.example.com:8091",
+    "linetoken": "linetoken+linetoken+linetoken+linetoken+linetoken"
+  }
+}

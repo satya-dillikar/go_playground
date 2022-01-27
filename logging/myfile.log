@@ -1,0 +1,55 @@
+Log file created at: 2021/11/03 16:04:44
+Running on machine: sdillikar-a01
+Binary: Built with gc go1.17.1 for darwin/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1103 16:04:44.859600   11787 my_klog.go:25] nice to meet you
+I1103 16:04:44.860095   11787 my_klog.go:28] main started
+F1103 16:04:44.860098   11787 my_klog.go:31] fatal message
+goroutine 1 [running]:
+k8s.io/klog/v2.stacks(0x1)
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:1038 +0x8a
+k8s.io/klog/v2.(*loggingT).output(0x11785c0, 0x3, 0x0, 0xc00013e000, 0x0, {0x10fb3dc, 0x1178980}, 0xc0001183c0, 0x0)
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:987 +0x5fd
+k8s.io/klog/v2.(*loggingT).println(0x0, 0x0, 0x0, {0x0, 0x0}, {0xc0001183c0, 0x1, 0x1})
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:713 +0x14a
+k8s.io/klog/v2.Fatalln(...)
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:1525
+main.main()
+	/Users/sdillikar/github/projects/go_playground/logging/my_klog.go:31 +0x1e5
+
+goroutine 19 [chan receive]:
+k8s.io/klog/v2.(*loggingT).flushDaemon(0x0)
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:1181 +0x6a
+created by k8s.io/klog/v2.init.0
+	/Users/sdillikar/go/pkg/mod/k8s.io/klog/v2@v2.30.0/klog.go:420 +0xfb
+Log file created at: 2021/11/03 16:06:17
+Running on machine: sdillikar-a01
+Binary: Built with gc go1.17.1 for darwin/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1103 16:06:17.945204   12083 my_klog.go:25] INFO- nice to meet you
+W1103 16:06:17.945751   12083 my_klog.go:28] WARN -main started
+E1103 16:06:17.945753   12083 my_klog.go:33] Error - report
+Log file created at: 2021/11/03 17:17:44
+Running on machine: sdillikar-a01
+Binary: Built with gc go1.17.1 for darwin/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1103 17:17:44.707735   24462 my_klog.go:25] INFO- nice to meet you
+W1103 17:17:44.708454   24462 my_klog.go:28] WARN -main started
+E1103 17:17:44.708457   24462 my_klog.go:33] Error - report
+E1103 17:17:44.708459   24462 my_klog.go:34] Error - report new line
+Log file created at: 2021/11/03 17:18:11
+Running on machine: sdillikar-a01
+Binary: Built with gc go1.17.1 for darwin/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1103 17:18:11.304742   24582 my_klog.go:25] INFO- nice to meet you
+W1103 17:18:11.305017   24582 my_klog.go:28] WARN -main started
+E1103 17:18:11.305019   24582 my_klog.go:33] Error - report new line
+E1103 17:18:11.305021   24582 my_klog.go:34] Error - report
+Log file created at: 2021/11/18 15:17:52
+Running on machine: sdillikar-a01
+Binary: Built with gc go1.17.2 for darwin/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1118 15:17:52.911359   19834 my_klog.go:25] INFO- nice to meet you
+W1118 15:17:52.912342   19834 my_klog.go:28] WARN -main started
+E1118 15:17:52.912345   19834 my_klog.go:33] Error - report new line
+E1118 15:17:52.912348   19834 my_klog.go:34] Error - report

@@ -1,0 +1,32 @@
+---
+swagger: "2.0"
+info:
+  description: "A Simple IP Address API"
+  version: "v1"
+  title: "ipify"
+host: "api.ipify.org"
+basePath: "/"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      summary: "Get client IP"
+      parameters:
+      - name: "format"
+        in: "query"
+        description: "The format to return the response in, i.e. json."
+        required: false
+        type: "string"
+        default: "json"
+        x-exportParamName: "Format"
+        x-optionalDataType: "String"
+      responses:
+        "200":
+          description: "Success response"
+          schema:
+            type: "object"
+            properties:
+              ip:
+                type: "string"
+                example: "88.68.10.107"

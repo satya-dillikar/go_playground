@@ -1,0 +1,65 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/spf13/viper"
+)
+
+const (
+	MajorVersionsInSummary = 3
+	MinorVersionsInSummary = 3
+	PatchVersionsInSummary = 3
+)
+
+// Wapper struct to include three version constants
+type VersionsInSummary struct {
+	major string
+	minor string
+	patch string
+}
+
+func main() {
+	// Config
+	viper.SetConfigName("myconfig-version.yaml") // config file name without extension
+	//viper.SetConfigName("myconfig.yaml") // config file name without extension
+	viper.SetConfigType("yaml")
+	//viper.SetConfigType("json")
+	//viper.AddConfigPath(".")
+	viper.AddConfigPath("./config/") // config file path
+
+	viper.AutomaticEnv() // read value ENV variable
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println("fatal error config file: default \n", err)
+		os.Exit(1)
+	}
+
+	// Set default value
+	viper.SetDefault("versioninsummary.major", MajorVersionsInSummary)
+	viper.SetDefault("versioninsummary.minor", MinorVersionsInSummary)
+	viper.SetDefault("versioninsummary.patch", PatchVersionsInSummary)
+
+	// Declare var
+	env := viper.GetString("app.env")
+	producerbroker := viper.GetString("app.producerbroker")
+	consumerbroker := viper.GetString("app.consumerbroker")
+	linetoken := viper.GetString("app.linetoken")
+	versions_filter := VersionsInSummary{}
+	versions_filter.major = viper.GetString("versioninsummary.major")
+	versions_filter.minor = viper.GetString("versioninsummary.minor")
+	versions_filter.patch = viper.GetString("versioninsummary.patch")
+
+	// Print
+	fmt.Println("---------- Example ----------")
+	fmt.Println("app.env :", env)
+	fmt.Println("app.consumerbroker :", consumerbroker)
+	fmt.Println("app.producerbroker :", producerbroker)
+	fmt.Println("app.linetoken :", linetoken)
+	// fmt.Println("versioninsummary.major :", major)
+	// fmt.Println("versioninsummary.minor :", minor)
+	// fmt.Println("versioninsummary.patch :", patch)
+	fmt.Println("version filters:", versions_filter)
+}

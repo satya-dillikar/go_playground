@@ -1,0 +1,24 @@
+syntax = "proto3";
+//package main;
+
+import "google/api/annotations.proto";
+
+//option go_package=".;pingpong";
+option go_package="satya.com/satya-dillikar/grpcexample/pingpong";
+
+message PingRequest {
+}
+
+message PongResponse {
+    bool ok = 1;
+}
+
+service PingPong{
+
+    rpc Ping(PingRequest) returns (PongResponse) {
+        option (google.api.http) = {
+        post: "/v1/example/ping"
+        body: "*"
+        };
+    };
+}

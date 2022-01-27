@@ -1,0 +1,10 @@
+version: v1
+plugins:
+  - name: go
+    out: gen
+    opt:
+     - module=satya.com/helloworld_buf/gen
+  - name: go-grpc
+    out: gen
+    opt:
+      - module=satya.com/helloworld_buf/gen

@@ -1,0 +1,9 @@
+app:
+  env:  "myconfig.yaml"
+  consumerbroker: "first.example.com:9092"
+  producerbroker: "second.example.com:9092"
+  linetoken: "linetoken-linetoken-linetoken-linetoken-linetoken"
+versioninsummary:
+    major: 1
+    minor: 4
+    patch: 10

@@ -1,0 +1,209 @@
+package main
+
+import (
+	"context"
+	"log"
+	"net"
+	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+
+	"satya.com/satya-dillikar/grpcexample/interceptors"
+	pingpong "satya.com/satya-dillikar/grpcexample/pingpong"
+)
+
+const (
+	port = ":8099"
+)
+
+type gwHandlerArgs struct {
+	ctx         context.Context
+	mux         *runtime.ServeMux
+	addr        string
+	dialOptions []grpc.DialOption
+}
+
+func main() {
+
+	// PART-1
+	grpcLis, err := net.Listen("tcp", port)
+	if err != nil {
+		//return fmt.Errorf("failed to listen: %v", err)
+		log.Fatalf("failed to listen: %v", err)
+	}
+	// Add PingCounter from the interceptors package
+	pc := interceptors.PingCounter{}
+	grpcSrv := grpc.NewServer(
+		// Here we add the chaining of interceptors, they will execute in order
+		grpc.ChainUnaryInterceptor(
+			pc.ServerCount,
+			interceptors.LogRequest,
+		),
+	)
+
+	s := &Server{}
+	pingpong.RegisterPingPongServer(grpcSrv, s)
+	log.Printf("Serving gRPC - listening at %v", grpcLis.Addr())
+
+	go func() {
+		err = grpcSrv.Serve(grpcLis)
+		if err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+
+	// PART-2
+
+	gwmux := runtime.NewServeMux()
+
+	listenAddr := port
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	gwArgs := gwHandlerArgs{
+		ctx:         ctx,
+		mux:         gwmux,
+		addr:        listenAddr,
+		dialOptions: []grpc.DialOption{grpc.WithInsecure()},
+	}
+
+	// Create the core.plugins server which handles registration of plugins,
+	// and register it for both grpc and http.
+	err = pingpong.RegisterPingPongHandlerFromEndpoint(gwArgs.ctx, gwArgs.mux, gwArgs.addr, gwArgs.dialOptions)
+	if err != nil {
+		log.Fatalf("failed to register Greeter handler for gateway: %v", err)
+	}
+
+	/*
+			conn, err := grpc.DialContext(
+			context.Background(),
+			"0.0.0.0:8099",
+			grpc.WithBlock(),
+			grpc.WithInsecure(),
+		)
+		if err != nil {
+			log.Fatalln("Failed to dial server:", err)
+		}
+			err = pingpong.RegisterPingPongHandler(context.Background(), gwmux, conn)
+			if err != nil {
+				log.Fatalln("Failed to register gateway:", err)
+			}
+	*/
+
+	gwServer := &http.Server{
+		Addr:    ":8098",
+		Handler: gwmux,
+	}
+
+	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8098")
+	log.Fatalln(gwServer.ListenAndServe())
+}
+
+/*
+func main() {
+
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		//return fmt.Errorf("failed to listen: %v", err)
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	// Multiplex the connection between grpc and http.
+	// Note: due to a change in the grpc protocol, it's no longer possible to just match
+	// on the simpler cmux.HTTP2HeaderField("content-type", "application/grpc"). More details
+	// at https://github.com/soheilhy/cmux/issues/64
+	mux := cmux.New(lis)
+	//grpcLis := mux.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
+	//grpcwebLis := mux.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc-web"))
+	httpLis := mux.Match(cmux.Any())
+
+	// Create the grpc server and register the reflection server (for now, useful for discovery
+	// using grpcurl) or similar.
+
+	// Add PingCounter from the interceptors package
+	pc := interceptors.PingCounter{}
+	grpcSrv := grpc.NewServer(
+		// Here we add the chaining of interceptors, they will execute in order
+		grpc.ChainUnaryInterceptor(
+			pc.ServerCount,
+			interceptors.LogRequest,
+		),
+	)
+
+	s := &Server{}
+	pingpong.RegisterPingPongServer(grpcSrv, s)
+
+	// Register reflection service on gRPC server.
+	//log.Printf("Register reflection service on gRPC server")
+	//reflection.Register(grpcSrv)
+
+	webrpcProxy := grpcweb.WrapServer(grpcSrv,
+		grpcweb.WithOriginFunc(func(origin string) bool { return true }),
+		grpcweb.WithWebsockets(true),
+		grpcweb.WithWebsocketOriginFunc(func(req *http.Request) bool { return true }),
+	)
+
+	gwmux := runtime.NewServeMux()
+
+	//
+	// 	listenAddr := port
+	// 	ctx, cancel := context.WithCancel(context.Background())
+	// 	defer cancel()
+
+
+	// 	gwArgs := gwHandlerArgs{
+	// 		ctx:         ctx,
+	// 		mux:         gwmux,
+	// 		addr:        listenAddr,
+	// 		dialOptions: []grpc.DialOption{grpc.WithInsecure()},
+	// 	}
+
+	// 	// Create the core.plugins server which handles registration of plugins,
+	// 	// and register it for both grpc and http.
+	// 	err = pingpong.RegisterPingPongHandlerFromEndpoint(gwArgs.ctx, gwArgs.mux, gwArgs.addr, gwArgs.dialOptions)
+	// 	if err != nil {
+	// 		log.Fatalf("failed to register Greeter handler for gateway: %v", err)
+	// 	}
+	//
+
+	httpSrv := &http.Server{
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if webrpcProxy.IsGrpcWebRequest(r) || webrpcProxy.IsAcceptableGrpcCorsRequest(r) || webrpcProxy.IsGrpcWebSocketRequest(r) {
+				webrpcProxy.ServeHTTP(w, r)
+			} else {
+				gwmux.ServeHTTP(w, r)
+			}
+		}),
+	}
+
+	go func() {
+		err := grpcSrv.Serve(grpcLis)
+		if err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+	log.Println("Serving gRPC ")
+	// 	go func() {
+	//    		err := grpcSrv.Serve(grpcwebLis)
+	//    		if err != nil {
+	//    			log.Fatalf("failed to serve: %v", err)
+	//    		}
+	//    	}()
+	//    	log.Println("Serving gRPC-web ")
+
+	go func() {
+		err := httpSrv.Serve(httpLis)
+		if err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+	log.Printf("Serving HTTP %v", port)
+
+	log.Println("Starting MUX server on")
+	if err := mux.Serve(); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+
+}
+*/
