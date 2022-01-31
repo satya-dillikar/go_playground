@@ -8,21 +8,6 @@ $ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
 $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
 
 $ git clone -b v1.41.0 https://github.com/grpc/grpc-go
-$ cd grpc-go/examples/helloworld
-
-$ go run greeter_server/main.go
-
-
-$ go run greeter_client/main.go
-
-$ protoc --go_out=. --go_opt=paths=source_relative \
-    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    proto/helloworld2.proto
-
-$ go run greeter_server/main.go
-
-
-$ go run greeter_client/main.go Alice
 ----------------------------------------------------------------
 
 ACTUAL commands

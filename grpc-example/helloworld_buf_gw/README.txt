@@ -24,20 +24,20 @@ tree .
     └── helloworld.proto
 
 
-go mod init satya.com/helloworld_buf
+go mod init satya.com/helloworld_buf_gw
 
-
+DO NOT RUN "go mod tidy" YET. see below
 
 
 change all
 helloworld.proto
-option go_package = "satya.com/helloworld_buf/gen/proto";
+option go_package = "satya.com/helloworld_buf_gw/gen/proto";
 
 greeter_client/main.go
-import pb "satya.com/helloworld_buf/gen/proto"
+import pb "satya.com/helloworld_buf_gw/gen/proto"
 
 greeter_server/main.go
-import pb "satya.com/helloworld_buf/gen/proto"
+import pb "satya.com/helloworld_buf_gw/gen/proto"
 
 #update buf.yaml
 #update buf.gen.yaml
