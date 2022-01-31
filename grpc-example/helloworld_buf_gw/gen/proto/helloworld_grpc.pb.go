@@ -26,6 +26,12 @@ type GreeterClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	// Sends another greeting
 	SayHelloAgain(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	HomeLink(ctx context.Context, in *HomeLinkRequest, opts ...grpc.CallOption) (*HomeLinkResponse, error)
+	CreateEvent(ctx context.Context, in *PostRequest, opts ...grpc.CallOption) (*PostResponse, error)
+	GetAllEvents(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	GetOneEvent(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
+	UpdateEvent(ctx context.Context, in *PatchOneRequest, opts ...grpc.CallOption) (*PatchOneResponse, error)
+	DeleteEvent(ctx context.Context, in *DelOneRequest, opts ...grpc.CallOption) (*DelOneResponse, error)
 }
 
 type greeterClient struct {
@@ -54,6 +60,60 @@ func (c *greeterClient) SayHelloAgain(ctx context.Context, in *HelloRequest, opt
 	return out, nil
 }
 
+func (c *greeterClient) HomeLink(ctx context.Context, in *HomeLinkRequest, opts ...grpc.CallOption) (*HomeLinkResponse, error) {
+	out := new(HomeLinkResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/HomeLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) CreateEvent(ctx context.Context, in *PostRequest, opts ...grpc.CallOption) (*PostResponse, error) {
+	out := new(PostResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/CreateEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) GetAllEvents(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
+	out := new(GetAllResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) GetOneEvent(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error) {
+	out := new(GetOneResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/GetOneEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) UpdateEvent(ctx context.Context, in *PatchOneRequest, opts ...grpc.CallOption) (*PatchOneResponse, error) {
+	out := new(PatchOneResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/UpdateEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) DeleteEvent(ctx context.Context, in *DelOneRequest, opts ...grpc.CallOption) (*DelOneResponse, error) {
+	out := new(DelOneResponse)
+	err := c.cc.Invoke(ctx, "/Greeter/DeleteEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GreeterServer is the server API for Greeter service.
 // All implementations must embed UnimplementedGreeterServer
 // for forward compatibility
@@ -62,6 +122,12 @@ type GreeterServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	// Sends another greeting
 	SayHelloAgain(context.Context, *HelloRequest) (*HelloReply, error)
+	HomeLink(context.Context, *HomeLinkRequest) (*HomeLinkResponse, error)
+	CreateEvent(context.Context, *PostRequest) (*PostResponse, error)
+	GetAllEvents(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	GetOneEvent(context.Context, *GetOneRequest) (*GetOneResponse, error)
+	UpdateEvent(context.Context, *PatchOneRequest) (*PatchOneResponse, error)
+	DeleteEvent(context.Context, *DelOneRequest) (*DelOneResponse, error)
 	mustEmbedUnimplementedGreeterServer()
 }
 
@@ -74,6 +140,24 @@ func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*Hel
 }
 func (UnimplementedGreeterServer) SayHelloAgain(context.Context, *HelloRequest) (*HelloReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHelloAgain not implemented")
+}
+func (UnimplementedGreeterServer) HomeLink(context.Context, *HomeLinkRequest) (*HomeLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HomeLink not implemented")
+}
+func (UnimplementedGreeterServer) CreateEvent(context.Context, *PostRequest) (*PostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")
+}
+func (UnimplementedGreeterServer) GetAllEvents(context.Context, *GetAllRequest) (*GetAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
+}
+func (UnimplementedGreeterServer) GetOneEvent(context.Context, *GetOneRequest) (*GetOneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOneEvent not implemented")
+}
+func (UnimplementedGreeterServer) UpdateEvent(context.Context, *PatchOneRequest) (*PatchOneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEvent not implemented")
+}
+func (UnimplementedGreeterServer) DeleteEvent(context.Context, *DelOneRequest) (*DelOneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteEvent not implemented")
 }
 func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
 
@@ -124,6 +208,114 @@ func _Greeter_SayHelloAgain_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Greeter_HomeLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).HomeLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/HomeLink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).HomeLink(ctx, req.(*HomeLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_CreateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).CreateEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/CreateEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).CreateEvent(ctx, req.(*PostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).GetAllEvents(ctx, req.(*GetAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_GetOneEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).GetOneEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/GetOneEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).GetOneEvent(ctx, req.(*GetOneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_UpdateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PatchOneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).UpdateEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/UpdateEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).UpdateEvent(ctx, req.(*PatchOneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_DeleteEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelOneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).DeleteEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/DeleteEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).DeleteEvent(ctx, req.(*DelOneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +330,30 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SayHelloAgain",
 			Handler:    _Greeter_SayHelloAgain_Handler,
+		},
+		{
+			MethodName: "HomeLink",
+			Handler:    _Greeter_HomeLink_Handler,
+		},
+		{
+			MethodName: "CreateEvent",
+			Handler:    _Greeter_CreateEvent_Handler,
+		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _Greeter_GetAllEvents_Handler,
+		},
+		{
+			MethodName: "GetOneEvent",
+			Handler:    _Greeter_GetOneEvent_Handler,
+		},
+		{
+			MethodName: "UpdateEvent",
+			Handler:    _Greeter_UpdateEvent_Handler,
+		},
+		{
+			MethodName: "DeleteEvent",
+			Handler:    _Greeter_DeleteEvent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

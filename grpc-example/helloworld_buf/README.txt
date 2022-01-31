@@ -26,9 +26,6 @@ tree .
 
 go mod init satya.com/helloworld_buf
 
-
-
-
 change all
 helloworld.proto
 option go_package = "satya.com/helloworld_buf/gen/proto";

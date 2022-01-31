@@ -42,11 +42,14 @@ import pb "satya.com/helloworld_buf_gw/gen/proto"
 #update buf.yaml
 #update buf.gen.yaml
 
+go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+which protoc-gen-grpc-gateway
 
 buf mod update proto
 buf generate proto
 
-cd ../
+
 go mod tidy
 
 

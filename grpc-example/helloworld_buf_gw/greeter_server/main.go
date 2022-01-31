@@ -51,6 +51,124 @@ func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	return &pb.HelloReply{Message: "From server: Hello again " + in.GetName()}, nil
 }
 
+type event struct {
+	ID          string `json:"ID"`
+	Title       string `json:"Title"`
+	Description string `json:"Description"`
+}
+
+type allEvents []event
+
+var events = allEvents{
+	{
+		ID:          "1",
+		Title:       "Introduction to Golang",
+		Description: "Come join us for a chance ",
+	},
+	{
+		ID:          "2",
+		Title:       "Introduction to Python",
+		Description: "Come to learn ",
+	},
+	{
+		ID:          "4",
+		Title:       "Introduction to Java",
+		Description: "try it out",
+	},
+}
+
+func (s *server) HomeLink(ctx context.Context, in *pb.HomeLinkRequest) (*pb.HomeLinkResponse, error) {
+
+	return &pb.HomeLinkResponse{Greetings: "Welcome home!"}, nil
+}
+
+func (s *server) CreateEvent(ctx context.Context, in *pb.PostRequest) (*pb.PostResponse, error) {
+	newEvent := event{}
+
+	postData := in.GetData()
+	newEvent.ID = postData.ID
+	newEvent.Title = postData.Title
+	newEvent.Description = postData.Description
+
+	log.Println("CreateEvent:", newEvent)
+	events = append(events, newEvent)
+
+	retEvent := &pb.EventStruct{}
+	retEvent.ID = newEvent.ID
+	retEvent.Title = newEvent.Title
+	retEvent.Description = newEvent.Description
+
+	return &pb.PostResponse{Data: retEvent}, nil
+}
+
+func (s *server) GetAllEvents(ctx context.Context, in *pb.GetAllRequest) (*pb.GetAllResponse, error) {
+	newEvents := []*pb.EventStruct{}
+	for _, event := range events {
+		retEvent := &pb.EventStruct{}
+		retEvent.ID = event.ID
+		retEvent.Title = event.Title
+		retEvent.Description = event.Description
+		newEvents = append(newEvents, retEvent)
+	}
+	return &pb.GetAllResponse{Data: newEvents}, nil
+}
+
+func (s *server) GetOneEvent(ctx context.Context, in *pb.GetOneRequest) (*pb.GetOneResponse, error) {
+
+	eventID := in.GetID()
+	retEvent := &pb.EventStruct{}
+	for _, singleEvent := range events {
+		if singleEvent.ID == eventID {
+			retEvent.ID = singleEvent.ID
+			retEvent.Title = singleEvent.Title
+			retEvent.Description = singleEvent.Description
+			break
+		}
+	}
+	return &pb.GetOneResponse{Data: retEvent}, nil
+}
+
+func (s *server) UpdateEvent(ctx context.Context, in *pb.PatchOneRequest) (*pb.PatchOneResponse, error) {
+	var updatedEvent event
+	eventID := in.GetID()
+
+	patchData := in.GetData()
+	updatedEvent.Title = patchData.Title
+	updatedEvent.Description = patchData.Description
+
+	log.Println("UpdateEvent:", updatedEvent)
+	log.Println("eventID:", eventID)
+	retEvent := &pb.EventStruct{}
+	for i, singleEvent := range events {
+		if singleEvent.ID == eventID {
+			retEvent.ID = singleEvent.ID
+			retEvent.Title = singleEvent.Title
+			retEvent.Description = singleEvent.Description
+			events[i].Title = updatedEvent.Title
+			events[i].Description = updatedEvent.Description
+			break
+		}
+	}
+	return &pb.PatchOneResponse{Data: retEvent}, nil
+}
+
+func (s *server) DeleteEvent(ctx context.Context, in *pb.DelOneRequest) (*pb.DelOneResponse, error) {
+	eventID := in.GetID()
+
+	retEvent := &pb.EventStruct{}
+	for i, singleEvent := range events {
+		if singleEvent.ID == eventID {
+			retEvent.ID = singleEvent.ID
+			retEvent.Title = singleEvent.Title
+			retEvent.Description = singleEvent.Description
+			events = append(events[:i], events[i+1:]...)
+			log.Printf("The event with ID %v has been deleted successfully\n", eventID)
+			break
+		}
+	}
+	return &pb.DelOneResponse{Data: retEvent}, nil
+}
+
 func main() {
 
 	lis, err := net.Listen("tcp", port)
