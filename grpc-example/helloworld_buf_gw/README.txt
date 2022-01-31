@@ -132,3 +132,91 @@ grpcurl -plaintext -d '{ "name" : "sunny"}' 0.0.0.0:50051 Greeter.SayHelloAgain
 {
   "message": "From server: Hello again sunny"
 }
+
+grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+{
+  "data": [
+    {
+      "ID": "1",
+      "Title": "Introduction to Golang",
+      "Description": "Come join us for a chance "
+    },
+    {
+      "ID": "2",
+      "Title": "Introduction to Python",
+      "Description": "Come to learn "
+    },
+    {
+      "ID": "4",
+      "Title": "Introduction to Java",
+      "Description": "try it out"
+    }
+  ]
+}
+
+ grpcurl -plaintext -d '{"ID" :"1"}'  0.0.0.0:50051 Greeter.GetOneEvent
+{
+  "data": {
+    "ID": "1",
+    "Title": "Introduction to Golang",
+    "Description": "Come join us for a chance "
+  }
+}
+
+grpcurl -plaintext -d '{"ID" :"4"}'  0.0.0.0:50051 Greeter.DeleteEvent
+
+
+grpcurl -plaintext -d '{"data" :{"ID" :"4", "Title" : "TEST4"}}'  0.0.0.0:50051 Greeter.CreateEvent
+{
+  "data": {
+    "ID": "4",
+    "Title": "TEST4"
+  }
+}
+➜  private_repo grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+{
+  "data": [
+    {
+      "ID": "1",
+      "Title": "Introduction to Golang",
+      "Description": "Come join us for a chance "
+    },
+    {
+      "ID": "2",
+      "Title": "Introduction to Python",
+      "Description": "Come to learn "
+    },
+    {
+      "ID": "4",
+      "Title": "TEST4"
+    }
+  ]
+}
+
+grpcurl -plaintext -d '{"ID": "4", "data" :{ "Title" : "JAVA4", "Description":"JAVA 4"}}'  0.0.0.0:50051 Greeter.UpdateEvent
+{
+  "data": {
+    "ID": "4",
+    "Title": "TEST4"
+  }
+}
+grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+{
+  "data": [
+    {
+      "ID": "1",
+      "Title": "Introduction to Golang",
+      "Description": "Come join us for a chance "
+    },
+    {
+      "ID": "2",
+      "Title": "Introduction to Python",
+      "Description": "Come to learn "
+    },
+    {
+      "ID": "4",
+      "Title": "JAVA4",
+      "Description": "JAVA 4"
+    }
+  ]
+}
