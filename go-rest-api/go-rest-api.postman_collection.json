@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "aa9789bc-1d52-4e0c-bb2e-aac56368b9ed",
+		"name": "go-rest-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HomeLink",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080"
+			},
+			"response": []
+		},
+		{
+			"name": "All Events",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://localhost:8080/events"
+			},
+			"response": []
+		},
+		{
+			"name": "Event",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/events/2"
+			},
+			"response": []
+		},
+		{
+			"name": "Event Remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/events/2"
+			},
+			"response": []
+		},
+		{
+			"name": "Event Update",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Title\": \"Advance Python3 concepts\",\n    \"Description\": \"Advance Python3 Description\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/events/3"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ID\": \"3\",\n    \"Title\": \"Python concepts\",\n    \"Description\": \"Advance Python Description\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event"
+					],
+					"query": [
+						{
+							"key": "ID",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "Title",
+							"value": "learn python",
+							"disabled": true
+						},
+						{
+							"key": "Description",
+							"value": "python is the best scripting lang",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
