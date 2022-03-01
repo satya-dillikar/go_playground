@@ -216,7 +216,5 @@ Contributors names and contact info
 N/A
 
 ## Acknowledgments
-
-Inspiration, code snippets, etc.
 * [grpc api configuration](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/)
 * [customizing openapi output](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_openapi_output/)
