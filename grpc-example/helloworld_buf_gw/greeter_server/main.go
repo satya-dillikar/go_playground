@@ -218,7 +218,7 @@ func main() {
 	)
 	*/
 	listener_addr = fmt.Sprintf("0.0.0.0:%v", port)
-	log.Printf("server listening at %v", listener_addr)
+	log.Printf("server GW listening at %v", listener_addr)
 	conn, err := grpc.DialContext(
 		context.Background(),
 		"0.0.0.0:50051",
@@ -241,6 +241,6 @@ func main() {
 		Handler: gwmux,
 	}
 
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	log.Println("Serving GW gRPC-Gateway on http://0.0.0.0:8090")
 	log.Fatalln(gwServer.ListenAndServe())
 }
