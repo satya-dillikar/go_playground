@@ -15,7 +15,7 @@ An in-depth paragraph about your project and overview of use.
 * protobuf
 
 ```
-$ brew install protobuf
+$ brew install protobuf 
 $ protoc --version  # Ensure compiler version is 3+
 
 $ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
