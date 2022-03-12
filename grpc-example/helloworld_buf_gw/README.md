@@ -300,7 +300,5 @@ Contributors names and contact info
 N/A
 
 ## Acknowledgments
-
-Inspiration, code snippets, etc.
 * [grpc-gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/tutorials/simple_hello_world/)
 * [generating_stubs](https://grpc-ecosystem.github.io/grpc-gateway/docs/tutorials/generating_stubs/using_buf/)
