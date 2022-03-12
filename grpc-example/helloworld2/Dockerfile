@@ -3,6 +3,7 @@ ARG GO_VERSION=1.16
 
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
 
+
 RUN mkdir -p /go_app/
 
 WORKDIR /go_app
@@ -24,6 +25,9 @@ FROM alpine:${ALPINE_VERSION}
 
 WORKDIR /home/app
 
-COPY --from=builder /go_app/bin/greeter_server .
+RUN apk add --no-cache --upgrade bash
 
-CMD ["./greeter_server"]
+COPY --from=builder /go_app/bin/greeter_server .
+COPY --from=builder /go_app/bin/greeter_client .
+
+# CMD ["./greeter_server"]

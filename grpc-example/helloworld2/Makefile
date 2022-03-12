@@ -1,5 +1,4 @@
-
-NAME:=greeter_server
+NAME:=greeter
 DOCKER_REPOSITORY:=dsatya6
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 VERSION:=0.1.0
