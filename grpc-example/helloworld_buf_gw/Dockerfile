@@ -16,7 +16,7 @@ ENV GO111MODULE=on
 RUN go mod download
 
 RUN CGO_ENABLED=0 go build -o bin/greeter_server ./greeter_server/main.go
-RUN CGO_ENABLED=0 go build -o bin/greeter_client ./greeter_client/main.go
+# RUN CGO_ENABLED=0 go build -o bin/greeter_client ./greeter_client/main.go
 
 FROM alpine:${ALPINE_VERSION}
 

@@ -1,5 +1,5 @@
 
-NAME:=greeter_server
+NAME:=helloworld-buf-gw
 DOCKER_REPOSITORY:=dsatya6
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 VERSION:=0.1.0
@@ -41,31 +41,36 @@ push-container :
 test-container :
 	@docker rm -f $(NAME) || true
 	# greeter_server is running on 50051
-	@docker run -dp 50051:9001 --name=$(NAME) $(DOCKER_IMAGE_NAME):$(VERSION)
+	@docker run -d -p 8090:8090 -p 50051:50051 --name=$(NAME) $(DOCKER_IMAGE_NAME):$(VERSION)
 	@docker ps
+	@sleep 5
 	@echo  ""
-	@curl -X POST -k http://127.0.0.1:8090/v1/example/echo -d '{"name" : "satya"}'
+	curl -X POST -k http://127.0.0.1:8090/v1/example/echo -d '{"name" : "satya"}'
 	@echo  ""
 	@grpcurl -plaintext 0.0.0.0:50051 list
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 describe Greeter
+	grpcurl -plaintext  0.0.0.0:50051 describe Greeter
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 describe HelloRequest
+	grpcurl -plaintext  0.0.0.0:50051 describe HelloRequest
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 describe HelloReply
+	grpcurl -plaintext  0.0.0.0:50051 describe HelloReply
 	@echo  ""
-	@grpcurl -plaintext -d '{ "name" : "sunny"}' 0.0.0.0:50051 Greeter.SayHello
+	grpcurl -plaintext -d '{ "name" : "sunny"}' 0.0.0.0:50051 Greeter.SayHello
 	@echo  ""
-	@grpcurl -plaintext -d '{ "name" : "sunny"}' 0.0.0.0:50051 Greeter.SayHelloAgain
+	grpcurl -plaintext -d '{ "name" : "sunny"}' 0.0.0.0:50051 Greeter.SayHelloAgain
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+	grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
 	@echo  ""
-	@grpcurl -plaintext -d '{"ID" :"1"}'  0.0.0.0:50051 Greeter.GetOneEvent
+	grpcurl -plaintext -d '{"ID" :"1"}'  0.0.0.0:50051 Greeter.GetOneEvent
 	@echo  ""
-	@grpcurl -plaintext -d '{"ID" :"4"}'  0.0.0.0:50051 Greeter.DeleteEvent
+	grpcurl -plaintext -d '{"ID" :"4"}'  0.0.0.0:50051 Greeter.DeleteEvent
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+	grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
 	@echo  ""
-	@grpcurl -plaintext -d '{"ID": "4", "data" :{ "Title" : "JAVA4", "Description":"JAVA 4"}}'  0.0.0.0:50051 Greeter.UpdateEvent
+	grpcurl -plaintext -d '{"ID": "4", "data" :{ "Title" : "JAVA4", "Description":"JAVA 4"}}'  0.0.0.0:50051 Greeter.UpdateEvent
 	@echo  ""
-	@grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+	grpcurl -plaintext  0.0.0.0:50051 Greeter.GetAllEvents
+	@echo  ""
+	@sleep 2
+	docker stop $(NAME) || true
+	docker rm -f $(NAME) || true
