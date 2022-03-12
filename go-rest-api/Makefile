@@ -1,5 +1,5 @@
 
-NAME:=go-rest-api
+NAME:=golang-rest-server
 DOCKER_REPOSITORY:=dsatya6
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 VERSION:=0.1.0
@@ -22,7 +22,7 @@ build-container :
 	@docker build -t dsatya6/$(NAME):$(VERSION) .
 
 push-container :
-	@docker push dsatya6/$(NAME):$(VERSION)	
+	@docker push dsatya6/$(NAME):$(VERSION)
 
 test-container :
 	@docker rm -f $(NAME) || true
@@ -30,3 +30,7 @@ test-container :
 	@docker ps
 	@sleep 5
 	@curl -s localhost:8080/events
+	@echo ""
+	@sleep 2
+	@docker stop $(NAME) || true
+	@docker rm -f $(NAME) || true	
